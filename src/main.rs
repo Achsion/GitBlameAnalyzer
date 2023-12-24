@@ -116,7 +116,7 @@ fn blame_file(project_dir: &String, project_file: &String) -> Vec<String> {
         .arg(project_dir)
         .arg("blame")
         .arg(project_file)
-        // .arg("-e") // uncomment this for mails
+        // .arg("-e") // uncomment this to display mail address of authors !!! the regex needs to be changed for this, i'm just too lazy to do it right now !!!
         .arg("-w")
         .arg("-f")
         .output();
