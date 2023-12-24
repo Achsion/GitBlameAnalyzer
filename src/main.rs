@@ -122,7 +122,7 @@ fn blame_file(project_dir: &String, project_file: &String) -> Vec<String> {
         .output();
 
     String::from_utf8(git_blame.unwrap().stdout)
-        .unwrap()
+        .unwrap_or_default()
         .lines()
         .map(String::from)
         .collect()
