@@ -101,7 +101,7 @@ fn count_blame_lines(
                 .captures_iter(blame_line)
                 .map(|c| c.extract())
                 .filter(|(_, [_author, line_content])| !line_content.trim().is_empty())
-                .map(|(_, [author, _line_content])| String::from(author))
+                .map(|(_, [author, _line_content])| String::from(author.trim()))
                 .map(|author| map_author(author, alias_mapping))
         })
         .fold(HashMap::new(), |mut count_map, author| {
