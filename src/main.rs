@@ -84,7 +84,7 @@ fn count_blame_lines(
     file_blame: Vec<String>,
     alias_mapping: &[AuthorAlias],
 ) -> HashMap<String, u128> {
-    let blame_regex = Regex::new(r"[\^0-9a-zA-Z]{8}\s\S+\s+\((\S+)\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+.\d{4}\s+\d+\)\s(.*)").unwrap();
+    let blame_regex = Regex::new(r"[\^0-9a-zA-Z]{8}\s\S*\s*\((.+)\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+.\d{4}\s+\d+\)\s(.*)").unwrap();
 
     file_blame
         .iter()
