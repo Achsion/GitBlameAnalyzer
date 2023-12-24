@@ -1,0 +1,6 @@
+---
+
+project_dir: "/path/to/project/to/analyze"
+author_mapping:
+  - author: "some.author"
+    map_to: "Some Author"
