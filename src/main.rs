@@ -1,6 +1,6 @@
 mod config;
 
-use crate::config::{AuthorAlias, Config};
+use crate::config::{AuthorAlias, Config, ProjectFileConfig};
 use indicatif::ProgressBar;
 use itertools::Itertools;
 use regex::Regex;
@@ -48,7 +48,7 @@ fn main() {
         process::exit(1);
     }
 
-    let count_map = analyze_project(config.project_dir, config.author_mapping);
+    let count_map = analyze_project(config);
     output_result(count_map);
 }
 
@@ -65,15 +65,15 @@ fn output_result(count_map: HashMap<String, u128>) {
     println!("\n\nLines of code per developer:\n{}", out);
 }
 
-fn analyze_project(project_dir: String, alias_mapping: Vec<AuthorAlias>) -> HashMap<String, u128> {
-    let project_files = fetch_git_project_files(&project_dir);
+fn analyze_project(config: Config) -> HashMap<String, u128> {
+    let project_files = fetch_git_project_files(&config.project_dir, &config.project_files);
 
     let progress_bar = ProgressBar::new(project_files.len() as u64);
 
     let count_map = project_files
         .iter()
-        .map(|project_file| blame_file(&project_dir, project_file))
-        .map(|file_blame| count_blame_lines(file_blame, &alias_mapping))
+        .map(|project_file| blame_file(&config.project_dir, project_file))
+        .map(|file_blame| count_blame_lines(file_blame, &config.author_mapping))
         .reduce(|mut a, b| {
             b.iter().for_each(|(author, count)| {
                 *a.entry(String::from(&*author)).or_insert(0) += *count
@@ -136,7 +136,10 @@ fn blame_file(project_dir: &String, project_file: &String) -> Vec<String> {
         .collect()
 }
 
-fn fetch_git_project_files(project_dir: &String) -> Vec<String> {
+fn fetch_git_project_files(
+    project_dir: &String,
+    project_file_config: &ProjectFileConfig,
+) -> Vec<String> {
     let git_ls_tree = Command::new("git")
         .arg("-C")
         .arg(project_dir)
@@ -151,5 +154,11 @@ fn fetch_git_project_files(project_dir: &String) -> Vec<String> {
         .unwrap()
         .lines()
         .map(String::from)
+        .filter(|file| {
+            !project_file_config
+                .blacklist
+                .iter()
+                .any(|regex| regex.is_match(file))
+        })
         .collect()
 }

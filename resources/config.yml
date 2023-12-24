@@ -1,6 +1,11 @@
 ---
 
 project_dir: "/path/to/project/to/analyze"
+project_files:
+  blacklist:
+    - "\\.xsd$"
+    - "/OneSpecificFile\\.java$"
+    - "^specific/directory/path/"
 author_mapping:
   - author: "some.author"
     map_to: "Some Author"
