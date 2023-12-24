@@ -62,7 +62,7 @@ fn output_result(count_map: HashMap<String, u128>) {
         .map(|(author, count)| format!("- {}: {}", author, count))
         .join("\n");
 
-    println!("Lines of code per developer:\n{}", out);
+    println!("\n\nLines of code per developer:\n{}", out);
 }
 
 fn analyze_project(project_dir: String, alias_mapping: Vec<AuthorAlias>) -> HashMap<String, u128> {
