@@ -1,6 +1,7 @@
 mod config;
 
 use crate::config::{AuthorAlias, Config};
+use indicatif::ProgressBar;
 use itertools::Itertools;
 use regex::Regex;
 use std::collections::HashMap;
@@ -67,7 +68,9 @@ fn output_result(count_map: HashMap<String, u128>) {
 fn analyze_project(project_dir: String, alias_mapping: Vec<AuthorAlias>) -> HashMap<String, u128> {
     let project_files = fetch_git_project_files(&project_dir);
 
-    project_files
+    let progress_bar = ProgressBar::new(project_files.len() as u64);
+
+    let count_map = project_files
         .iter()
         .map(|project_file| blame_file(&project_dir, project_file))
         .map(|file_blame| count_blame_lines(file_blame, &alias_mapping))
@@ -75,9 +78,14 @@ fn analyze_project(project_dir: String, alias_mapping: Vec<AuthorAlias>) -> Hash
             b.iter().for_each(|(author, count)| {
                 *a.entry(String::from(&*author)).or_insert(0) += *count
             });
+            progress_bar.inc(1);
             a
         })
-        .unwrap_or(HashMap::new())
+        .unwrap_or(HashMap::new());
+
+    progress_bar.finish_with_message("done");
+
+    count_map
 }
 
 fn count_blame_lines(
