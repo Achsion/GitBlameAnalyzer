@@ -68,6 +68,7 @@ fn count_blame_lines(file_blame: Vec<String>, _alias_mapping: &Vec<AuthorAlias>)
             blame_regex
                 .captures_iter(blame_line)
                 .map(|c| c.extract())
+                .filter(|(_, [_author, line_content])| !line_content.trim().is_empty())
                 .map(|(_, [author, _line_content])| String::from(author))
         })
         .fold(HashMap::new(), |mut count_map, author| {
