@@ -1,14 +1,18 @@
-mod config;
+use std::{env, process};
+use std::collections::HashMap;
+use std::path::PathBuf;
+use std::process::Command;
 
-use crate::config::{AuthorAlias, Config, ProjectFileConfig};
 use indicatif::ProgressBar;
 use itertools::Itertools;
 use regex::Regex;
-use std::collections::HashMap;
-use std::fs::metadata;
-use std::path::PathBuf;
-use std::process::Command;
-use std::{env, process};
+
+use crate::config::{AuthorAlias, Config, ProjectFileConfig};
+use crate::git::GitRepository;
+
+mod config;
+mod cache;
+mod git;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,27 +30,8 @@ fn main() {
         serde_yaml::from_reader(config_file).expect("Invalid config structure/values!");
 
     let project_dir = PathBuf::from(&config.project_dir);
-    if metadata(project_dir).is_err() {
-        println!();
-        eprintln!(
-            "\x1b[31;1mError: Could not find directory {}!\x1b[0m",
-            &config.project_dir
-        );
-        process::exit(1);
-    }
-
-    let check_for_git = Command::new("git")
-        .arg("-C")
-        .arg(&config.project_dir)
-        .arg("rev-parse")
-        .output();
-    if !check_for_git.unwrap().status.success() {
-        eprintln!(
-            "\x1b[31;1mError: {} is not a git directory!\x1b[0m",
-            &config.project_dir
-        );
-        process::exit(1);
-    }
+    let _git_repository = GitRepository::from_directory(project_dir);
+    //TODO: use git repo to generate cache file
 
     let count_map = analyze_project(config);
     output_result(count_map);
