@@ -2,7 +2,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Config {
+pub struct ProjectConfig {
     pub project_dir: String,
     pub project_files: ProjectFileConfig,
     pub author_mapping: Vec<AuthorAlias>,

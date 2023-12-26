@@ -1,6 +1,7 @@
-mod config;
+mod config {
+    pub mod project;
+}
 
-use crate::config::{AuthorAlias, Config, ProjectFileConfig};
 use indicatif::ProgressBar;
 use itertools::Itertools;
 use regex::Regex;
@@ -9,6 +10,7 @@ use std::fs::metadata;
 use std::path::PathBuf;
 use std::process::Command;
 use std::{env, process};
+use crate::config::project::{AuthorAlias, ProjectConfig, ProjectFileConfig};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -22,7 +24,7 @@ fn main() {
 
     let config_path = &args[1];
     let config_file = std::fs::File::open(config_path).expect("Could not open config file!");
-    let config: Config =
+    let config: ProjectConfig =
         serde_yaml::from_reader(config_file).expect("Invalid config structure/values!");
 
     let project_dir = PathBuf::from(&config.project_dir);
@@ -65,7 +67,7 @@ fn output_result(count_map: HashMap<String, u128>) {
     println!("\n\nLines of code per developer:\n{}", out);
 }
 
-fn analyze_project(config: Config) -> HashMap<String, u128> {
+fn analyze_project(config: ProjectConfig) -> HashMap<String, u128> {
     let project_files = fetch_git_project_files(&config.project_dir, &config.project_files);
 
     let progress_bar = ProgressBar::new(project_files.len() as u64);
