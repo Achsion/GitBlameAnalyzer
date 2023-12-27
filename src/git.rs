@@ -5,7 +5,7 @@ use std::process::Command;
 
 pub struct GitRepository {
     pub id: String,
-    pub project_dir: PathBuf
+    pub project_dir: PathBuf,
 }
 
 impl GitRepository {
@@ -56,9 +56,9 @@ impl GitRepository {
             .trim()
             .to_string();
 
-        Self{
+        Self {
             id: project_id,
-            project_dir: directory_path
+            project_dir: directory_path,
         }
     }
 }

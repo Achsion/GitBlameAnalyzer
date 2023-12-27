@@ -1,7 +1,7 @@
-use std::{env, process};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::process::Command;
+use std::{env, process};
 
 use indicatif::ProgressBar;
 use itertools::Itertools;
@@ -9,10 +9,14 @@ use regex::Regex;
 
 use crate::config::{AuthorAlias, Config, ProjectFileConfig};
 use crate::git::GitRepository;
+use crate::manager::directory_manager::DirectoryType;
 
-mod config;
 mod cache;
+mod config;
 mod git;
+mod manager {
+    pub mod directory_manager;
+}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -32,6 +36,8 @@ fn main() {
     let project_dir = PathBuf::from(&config.project_dir);
     let _git_repository = GitRepository::from_directory(project_dir);
     //TODO: use git repo to generate cache file
+
+    let _data_dir_path = DirectoryType::Data.setup_directory("de", "Achsion", "GitBlameAnalyzer");
 
     let count_map = analyze_project(config);
     output_result(count_map);
