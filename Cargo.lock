@@ -108,6 +108,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "directory_manager"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d743f1f87959817e62c3da113b59299fa267c934d91bb1ac487c6a63217f86cb"
+dependencies = [
+ "directories",
+]
+
+[[package]]
 name = "dirs-sys"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -153,7 +162,7 @@ name = "git-blame-analyzer"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "directories",
+ "directory_manager",
  "indicatif",
  "itertools",
  "regex",

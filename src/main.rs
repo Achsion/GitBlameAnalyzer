@@ -1,3 +1,4 @@
+use directory_manager::DirectoryType;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::process::Command;
@@ -9,14 +10,10 @@ use regex::Regex;
 
 use crate::config::{AuthorAlias, Config, ProjectFileConfig};
 use crate::git::GitRepository;
-use crate::manager::directory_manager::DirectoryType;
 
 mod cache;
 mod config;
 mod git;
-mod manager {
-    pub mod directory_manager;
-}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
